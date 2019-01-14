@@ -1,0 +1,240 @@
+ng="en">
+    <head>
+        <!-- Part number: E92136-04 -->
+        <!-- Published date: June 2018 -->
+        <!-- Template date: 10/18/17 -->
+        <meta content="text/html; charset=utf-8" http-equiv="content-type">
+        <title>Evaluating and Analyzing Sample Logs</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="robots" content="INDEX, FOLLOW">
+        <meta name="description" content="This tutorial guides you though evaluating Log Analytics functionality using sample logs files as well as your own log files.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/obe-lite.css">
+        <script src="js/jquery-1.11.0.min.js"></script>
+        <script src="js/jquery-ui-1.10.4.custom.js"></script>
+        <script src="js/jquery.tocify.jd.js"></script>
+        <script src="js/leftnav.js"></script>
+    
+    <link rel="schema.dcterms" href="http://purl.org/dc/terms/">
+    <meta name="dcterms.created" content="2018-06-20T00:06:51+00:00">
+    <meta name="dcterms.title" content="Analyzing Sample Logs and Your Own Logs Using Oracle Log Analytics">
+    <meta name="dcterms.category" content="cloud">
+    <meta name="dcterms.isVersionOf" content="TUTORIAL-EVALUATE-LA">
+    <meta name="dcterms.product" content="en/cloud/paas/management-cloud">
+    <meta name="dcterms.identifier" content="E92136-05">
+    <meta name="dcterms.release" content="Latest Cloud Release">
+  <script id="ssot-metadata" type="application/json"> {"primary":{"category":{"short_name":"cloud","element_name":"Cloud","display_in_url":true},"suite":{"short_name":"paas","element_name":"Platform as a Service (PaaS)","display_in_url":true},"product_group":{"short_name":"management","element_name":"Management","display_in_url":false},"product":{"short_name":"management-cloud","element_name":"Management Cloud Service","display_in_url":true},"release":{"short_name":"latest","element_name":"Latest Cloud Release","display_in_url":false}}} </script>
+    <script>window.ohcglobal || document.write('<script src="/en/dcommon/js/global.js">\x3C/script>')</script></head>
+    <body>
+        <header>
+            <div class="w1024" style="min-height:55px; display:block;"> <a href="https://docs.oracle.com" class="oracle-logo">
+              <img src="./img/oracle_doc_logo.png" alt="Oracle Documentation" style="max-width: none;" height="22" width="236"></a>
+            </div>
+        </header>
+        <!--end header-->
+
+        <div id="content">
+
+            <h1><img src="./img/obe_tag.png" align="middle" alt="Oracle by Example branding">Analyzing Sample Logs and Your Own Logs Using Oracle Log Analytics</h1>
+            <div class="w1024" style="clear:both; position:relative; margin-top:40px;">
+                <div class="navbackwide border-right"><!-- --></div>
+                <div id="shownav" title="Show Navigation" tabindex="0"><span class="fa fa-list"></span></div>
+                <div id="sidebar"><!-- -->
+                    <div class="left-nav-tut"><!-- -->
+                        <div id="hidenavw" title="Hide Navigation" tabindex="0"><span class="fa fa-close"></span></div>
+                        <div id="navbar" class="left-nav-w"><!-- -->
+                            <div id="toc" class="tocify"><!-- --></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="bookContainer">
+                    
+                    <article>
+                        <div data-spy="scroll" data-target=".left-nav-w"> </div>
+                        <section>
+                            <h2><img src="./img/32_begin.png" alt="section 0" height="32" width="32" class="num_circ">Before You Begin</h2>
+                            <p>This tutorial helps you get started with a kit for evaluating Oracle Log Analytics.  This kit includes a set of sample log files and it guides you through uploading a set of your own log files.  You can then explore Oracle Management Cloud Log Analytics functionality such as detecting anomalies in logs and correlating logs data. The kit also guides you through the installation of a Gateway Agent to help facilitate on-going data uploads.</p>
+                            
+                            <h3>Background</h3>
+                            <p>Oracle Log Analytics monitors, aggregates, indexes, and analyzes all log data from your applications and infrastructure enabling you to correlate this data and find problems faster. Using sample logs data, you can immediately explore the basic functionalities of Oracle Log Analytics.  You can then collect logs from your own environment and explore the data in more depth. Sample log files and other scripts are provided in the form of a zip file.</p>
+                            <h3>What Do You Need?</h3>
+                            <ul>
+    							<li>An Oracle Cloud account: If you don't already have an Oracle Cloud account, sign up to Oracle Cloud. For more information, see <a href="http://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/management-cloud&id=OMCGS-GUID-838A6676-0224-4CF1-8BC8-8327887D24B7" target="_blank">How Do I Access Oracle Management Cloud?</a></li>
+                                <li>An Oracle Management Cloud instance: If you don't already have an Oracle Management Cloud instance, create one. For more information, see <a href="http://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/management-cloud&id=OMCGS-GUID-C15E9F94-78CD-4868-A9F8-DCF50D267A2E" target="_blank">Creating an Oracle Management Cloud Instance</a>.</li>
+                                <li>Appropriate license: Configure your license edition <b>Oracle Management Cloud – Log Analytics Edition</b>. For more information, see <a href="http://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/management-cloud&id=OMCGS-GUID-A2F5635B-D7DE-4277-B707-035A96F19B26" target="_blank">How Do I License Oracle Management Cloud?</a></li>
+    							<li>A Unix host with connectivity to your Oracle Management Cloud instance and with a version of cURL that supports TLS 1.2 protocol</li>
+                                <li>For the installation of the Gateway Agent, the following Operating Systems are supported: Oracle Linux 5.x, 6.x, and 7.x (64-bit), Red Hat Enterprise Linux 5.x, 6.x, and 7.x (64-bit), SUSE Linux Enteprise Server 11 (x86_64), AIX 6.1 or later (minimum level 6100-07), AIX 7.1 or later (minimum level 7100-03), Solaris 10.x and 11.x, Microsoft Windows versions 2008 Enterprise R2 (Intel 64-bit, Developer) or later, Microsoft Windows Server 2012 Standard (Intel 64-bit), Microsoft Windows 2012 Standard R2 (Intel 64-bit, Developer) or later.</li>
+                            </ul>
+                            
+                        </section>
+
+                        <!-- ========================================================================================================================= -->
+                        <section>
+                            <hr>
+                            <h2 id="section_1" style="text-align: left;"><img src="./img/32_1.png" alt="section 1" height="32" width="32" class="num_circ">Prepare Your Environment</h2>
+                            
+                            
+                            <h3>Identify your Oracle Management Cloud instance</h3>
+                            <p>To meet the pre-requisites, you must have signed up for an Oracle Cloud account and created an Oracle Management Cloud instance.</p>
+                           
+                                <p>Sign in to Oracle Cloud as a user with the OMC Administrator role. Your Oracle Management Cloud instance tile should be displayed on the My Services dashboard.</p>
+                           
+                                <ol>
+                                    <li>On your Management Cloud tile, click the <strong>Action Menu </strong><img src="./img/hamburger.png" alt="action icon"> then click <strong>Open Service Console</strong>. You are now viewing the Oracle Management Cloud instances page.
+                  
+                </li>
+                
+                  <li>On the instance you want to access, click the <strong>Manage this instance</strong> menu and select <strong>OMC URL</strong>.
+                
+              
+                The Oracle Management Cloud console home page is displayed.
+                                    </li><li>Navigate to <b>Administration</b> > <b>Agents</b> > <b>Download</b> and select the <b>Cloud Agent</b> agent type from drop-down list. Make a note of your <code>UPLOAD_ROOT</code> value for your environment. </li>
+                                    <figure><img src="./img/agent_download.png" alt="The Action menu item" class="ScreenShot"><figcaption><a href="./files/agent_download.txt">Description of the illustration agent_download.png</a></figcaption></figure>
+                                </ol>   
+                            
+                            
+                            <h3>Check for TLS 1.2 support</h3>
+                           <ol>Ensure your cURL version supports the TLS 1.2 protocol by running the following command, from a terminal session on your Unix host:
+                                    <code><pre>$<b> curl --help | grep -i tlsv1.2</b> <br>--tlsv1.2       Use TLSv1.2 (SSL)</pre></code>
+                               Note the output of this command confirms that the version of the TLS protocol is <tt>TLSv1.2(SSL)</tt>.</ol>
+                           
+                           
+                            <h3>Verify your host connectivity to Oracle Management Cloud</h3>
+                            <p>Your Unix host must have HTTPS access to Oracle Management Cloud.  To check this, run the following commands from your Unix host:</p>
+                            <ol>
+                    
+                                <li>If you are using a proxy server, set a pointer to it.  If you are not using a proxy server, skip this step.
+                                    <code><pre>$<b> export HTTPS_PROXY=www-proxy.example.com:80</b></pre></code></li>
+                                <li>The UPLOAD_ROOT parameter value you noted for your environment represents the URL where the sample logs will be uploaded. Check the connectivity to your specific URL. The format of the command and sample output is shown below:<br>
+                    
+                                <code><pre>$<b> curl -I --tlsv1.2 <i> Your UPLOAD_ROOT</i></b>
+HTTP/1.0 200 Connection established
+HTTP/1.1 200 OK
+Date: Fri, 12 Jan 2018 00:56:42 GMT
+Server: Oracle-Application-Server-11g X-Frame-Options: SAMEORIGIN
+Last-Modified: Wed, 07 Dec 2017 23:27:01 GMT 
+ETag: "2b14-5267f6d5bfb40"
+Accept-Ranges: bytes
+Content-Length: 11028
+Vary: Accept-Encoding
+Cache-Control: no-cache,no-store</pre></code>
+                                The command output indicates that the connection was established.</li>
+                            
+
+                        </ol>
+                            
+                            
+        
+                        </section>
+                        
+                        <section>
+                            <hr>
+                            <h2 id="section_2" style="text-align: left;"><img src="./img/32_2.png" alt="section 2" height="32" width="32" class="num_circ">Prepare to Upload Log Data</h2>
+                            
+                            <ol>
+                    
+                                   <li>Create a local directory [SCRIPT_HOME].
+</li>
+                                    
+                                   <li>Save the kit file, <a href="https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:23996" target="_blank"><strong>DBLogTrial.zip</strong></a>, to the [SCRIPT_HOME] directory. </li> 
+                                       <!--<li><a href="https://community.oracle.com/docs/DOC-1018172" target="_blank"><b>uploadSample.pdf</b></a>, containing complete instructions on how to use the sample logs. </li>-->
+                                <li> Unzip DBLogTrial.zip in the [SCRIPT_HOME] directory.</li>
+                                  </ol>
+                        
+                            
+                                <ol>
+                                <code><pre>$<b> unzip DBLogTrial.zip</b></pre></code></ol>
+                            
+                            <p>Some of the files part of this set are:
+                            <ul>
+                                <li>PDF files with detailed instructions for uploading and evaluating sample data and your own data, as well as instructions for installing a Gateway agent</li>
+                                <li>Alertlog.zip (Sample database alert logs)</li>
+                                <li>Messages.zip (Sample Linux syslog files)</li>
+                                <li>uploadSample.sh (a shell script for uploading the sample logs)</li> 
+                                <li>uploadMyLog.sh (a shell script for uploading your own logs) </li>
+                                
+                                The next steps will guide you through these files.
+                                </ul>
+                        
+                        
+                        </p></section>
+                        <hr>
+                        <section>
+                            <h2 id="section_3" style="text-align: left;"><img src="./img/32_3.png" alt="section 3" height="32" width="32" class="num_circ">Upload Sample Logs and Evaluate </h2>
+                            <p>You are now ready to upload some sample logs to Log Analytics and explore its functionality.</p>
+                            <ol>
+                                <li>Open the instructions file <strong>uploadSample.pdf</strong> you saved above.</li>
+                                <li> Begin with the section <strong>Using uploadSample</strong>. The exercises that follow will help you view log records, detect anomalies with the Cluster operation and correlate logs based on this sample data.</li>
+                                
+                            </ol>
+                        </section>
+                        <hr>
+                <!--<section>
+                            <h2 id="section_4" style="text-align: left;"><img src="./img/32_4.png" alt="section 4" height="32" width="32" class="num_circ">Set Up the Customer Logs Package</h2>
+                            <p>Save the following files to a local directory:  
+                            </p>
+                                    
+                                   <ul><li>A zip file, <a href="https://community.oracle.com/docs/DOC-1017748" target="_blank"><b>uploadMyLog.zip</b></a>, </li>
+                    <li><a href="https://community.oracle.com/docs/DOC-1018172" target="_blank"><b>uploadMyLog.pdf</b></a>, with complete instructions on how to upload and read data from your own logs. </li>
+                    </ul>
+                         
+                            
+                               
+                           
+                        </section>-->
+                <hr>
+                <section>
+                            <h2 id="section_4" style="text-align: left;"><img src="./img/32_4.png" alt="section 4" height="32" width="32" class="num_circ">Upload Your Own Logs and Evaluate</h2>
+                            <p>When all the sample logs exercises are complete, you are ready to upload your own logs to Log Analytics and explore its functionality using your own data.</p>
+                            <ol>
+                                <li>Open the instructions file <strong>uploadMyLog.pdf</strong> you saved above.</li>
+                                <li> Begin with the section <strong>Installing uploadMyLog</strong>. The exercises that follow will help you view log records, detect anomalies with the Cluster operation and correlate logs based on your own data.</li>
+                                
+                            </ol>
+                        </section>
+                        
+                        <section>
+                            <h2 id="section_5" style="text-align: left;"><img src="./img/32_5.png" alt="section 5" height="32" width="32" class="num_circ">Install a Gateway Agent</h2>
+                            <p>The Oracle Management Cloud (OMC) Gateway is an optional yet vital component of an Oracle Management Cloud deployment.  It serves as a channel between Oracle Management Cloud agents and Oracle Management Cloud. While it is possible for the OMC agent that resides on each host to communicate directly with OMC’s backend, for security reasons, an organization may want to limit the number of hosts that can connect to the Internet directly.  In this case, it is best to set up one or a small number of OMC Gateway hosts, and enable Internet access only for those hosts.</p>
+                            
+                                <p>To complete this step, follow the instructions detailed in the file <strong>DeployGateway.pdf</strong> you saved above.</p>
+                                
+                           
+                        </section>
+                
+                        <section>
+                            <!-- Include the More Information section only in a single or the final lab or tutorial in a series -->
+                            <h2 id="more_info" style="text-align: left;"><img src="./img/32_more.png" alt="more information" height="32" width="32" class="num_circ">Want to Learn More?</h2>
+                            <ul>
+                                <li>To view a Log Analytics product tour, see the <a href="http://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/management-cloud&id=product-tour-la">Log Analytics Product Tour</a>.</li>
+                                <li>For more details on Oracle Log Analytics, see  <a href="https://docs.oracle.com/en/cloud/paas/management-cloud/log-analytics.html">Oracle Log Analytics on Oracle Help Center</a>.</li>
+                            </ul>
+                            <hr>
+                        </section>
+                    
+                    </article>
+                </div>
+                <br class="clearfloat">
+            </div>
+        </div>
+        <!--close main--> 
+        <!--end content-->
+        <div class="footer-container ">
+            <div style="max-width: 994px; padding:10px 0 0 17px;">
+                <footer class="footer-list">
+                    <ul>
+                        <li> <a href="https://www.oracle.com/corporate/index.html" target="_blank">About Oracle</a> </li>
+                        <li> <a href="https://www.oracle.com/us/corporate/contact/index.html" target="_blank">Contact Us</a> </li>
+                        <li> <a href="https://www.oracle.com/us/legal/index.html" target="_blank">Legal Notices</a> </li>
+                        <li> <a href="https://www.oracle.com/us/legal/terms/index.html" target="_blank">Terms of Use</a> </li>
+                        <li> <a href="https://www.oracle.com/us/legal/privacy/index.html" target="_blank">Your Privacy Rights</a> </li>
+                        <li><a href="https://www.oracle.com/pls/topic/lookup?ctx=cpyr&id=en">Copyright © 2017, 2018 Oracle and/or its affiliates. All rights reserved.</a></li>
+                    </ul>
+                </footer>
+            </div>
+            <script type="text/javascript" src="https://www.oracleimg.com/us/assets/metrics/ora_docs.js"></script>
+        </div>
+    </body>
+</html>
